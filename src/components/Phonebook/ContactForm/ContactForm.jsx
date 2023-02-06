@@ -1,38 +1,28 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
+import initialState from 'components/initialState';
 
 import styles from '../phonebook.module.scss'
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: ''
-  }
+const ContactForm = ({ onSubmit }) => {
+  const [state, setState] = useState({ ...initialState });
 
-  handleSubmit = evt => {
-    evt.preventDefault();
-
-    const {onSubmit} = this.props;
-
-    onSubmit({...this.state});
-    this.setState({
-      name: '',
-      number:''
-    })
+  const handleChange = ({ target }) => {
+    const { name, value } = target;
+    setState(prevState => {
+      return { ...prevState, [name]: value };
+    });
   };
 
-  handleChange = ({target}) => {
-    const {name, value} = target;
-    this.setState({
-      [name]: value
-    })
-  }
-  
-  render() {
-    const {handleChange, handleSubmit} = this;
-    const { name, number} = this.state;
+  const handleSubmit = evt => {
+    evt.preventDefault();
+    onSubmit({ name, number });
+    setState({ ...initialState });
+  };
 
-    return (
+  const { name, number } = state;
+
+  return (
     <div className={styles.block}>
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
@@ -56,13 +46,14 @@ class ContactForm extends Component {
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
           />
-          <button type="submit" className={styles.btn}>Add contacts</button>
+          <button type="submit" className={styles.btn}>
+            Add contacts
+          </button>
         </div>
       </form>
     </div>
-    )
-  }
-}
+  );
+};
 
 export default ContactForm;
 
