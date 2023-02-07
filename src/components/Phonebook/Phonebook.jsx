@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
 import ContactList from './ContactList/ContactList';
@@ -8,8 +8,15 @@ import ContactForm from './ContactForm/ContactForm';
 import styles from '../Phonebook/phonebook.module.scss';
 
 const Phonebook = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(()=> {
+    const contacts = JSON.parse(localStorage.getItem('my-contacts'));
+    return contacts? contacts : [];
+  });
   const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('my-contacts', JSON.stringify(contacts));
+  }, [contacts])
 
   const checkDuplicate = name => {
     const normalizeName = name.toLowerCase();
